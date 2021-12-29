@@ -90,6 +90,7 @@ public abstract class AutoConfigurationPackages {
 	 * @param registry the bean definition registry
 	 * @param packageNames the package names to set
 	 */
+	// TODO 它为什么可以将packageNames都注册进去
 	public static void register(BeanDefinitionRegistry registry, String... packageNames) {
 		if (registry.containsBeanDefinition(BEAN)) {
 			BeanDefinition beanDefinition = registry.getBeanDefinition(BEAN);
@@ -121,6 +122,7 @@ public abstract class AutoConfigurationPackages {
 
 		@Override
 		public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
+			// 将注解中的 basePackages basePackageClasses 的值对应的Class 注入
 			register(registry, new PackageImports(metadata).getPackageNames().toArray(new String[0]));
 		}
 

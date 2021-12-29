@@ -1,10 +1,11 @@
 pluginManagement {
 	repositories {
+		mavenLocal()
+		maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+		maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
 		mavenCentral()
 		gradlePluginPortal()
-		maven {
-			url 'https://repo.spring.io/plugins-release'
-		}
+		maven { url 'https://repo.spring.io/plugins-release' }
 		if (version.endsWith('BUILD-SNAPSHOT')) {
 			maven { url "https://repo.spring.io/snapshot" }
 		}
@@ -81,3 +82,5 @@ file("${rootDir}/spring-boot-project/spring-boot-starters").eachDirMatch(~/sprin
 file("${rootDir}/spring-boot-tests/spring-boot-smoke-tests").eachDirMatch(~/spring-boot-smoke-test.*/) {
 	include "spring-boot-tests:spring-boot-smoke-tests:${it.name}"
 }
+include 'spring-boot-debug'
+

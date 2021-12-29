@@ -96,6 +96,9 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 		if (!isEnabled(annotationMetadata)) {
 			return NO_IMPORTS;
 		}
+		// 得到META-INF/spring.factories目录下需要自动配置的class放在configurations中，去重，获取属性中exclude excludeName的值
+		// 放在exclusions 中，configurations去除exclusions中的值，再filter过滤，将configurations和exclusions以AutoConfigurationEntry
+		// 形式返回
 		AutoConfigurationEntry autoConfigurationEntry = getAutoConfigurationEntry(annotationMetadata);
 		return StringUtils.toStringArray(autoConfigurationEntry.getConfigurations());
 	}
@@ -120,11 +123,17 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 			return EMPTY_ENTRY;
 		}
 		AnnotationAttributes attributes = getAttributes(annotationMetadata);
+		// 得到META-INF/spring.factories目录下需要自动配置的class
 		List<String> configurations = getCandidateConfigurations(annotationMetadata, attributes);
+		// 去重
 		configurations = removeDuplicates(configurations);
+		// 返回属性中包含 exclude excludeName的值
 		Set<String> exclusions = getExclusions(annotationMetadata, attributes);
+		// 如果有Exclued 则抛出异常 The following classes could not be excluded because they are not auto-configuration classes
 		checkExcludedClasses(configurations, exclusions);
+		// 排除excluede
 		configurations.removeAll(exclusions);
+		// 过滤
 		configurations = getConfigurationClassFilter().filter(configurations);
 		fireAutoConfigurationImportEvents(configurations, exclusions);
 		return new AutoConfigurationEntry(configurations, exclusions);
@@ -175,6 +184,8 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 	 * @return a list of candidate configurations
 	 */
 	protected List<String> getCandidateConfigurations(AnnotationMetadata metadata, AnnotationAttributes attributes) {
+		// EnableAutoConfiguration.class
+		// 获取在META-INF/spring.factories目录下的所有文件 的 EnableAutoConfiguration的值
 		List<String> configurations = SpringFactoriesLoader.loadFactoryNames(getSpringFactoriesLoaderFactoryClass(),
 				getBeanClassLoader());
 		Assert.notEmpty(configurations, "No auto configuration classes found in META-INF/spring.factories. If you "
@@ -246,6 +257,7 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 		}
 		if (environment instanceof ConfigurableEnvironment) {
 			Binder binder = Binder.get(environment);
+			// spring.autoconfigure.exclude
 			return binder.bind(PROPERTY_NAME_AUTOCONFIGURE_EXCLUDE, String[].class).map(Arrays::asList)
 					.orElse(Collections.emptyList());
 		}

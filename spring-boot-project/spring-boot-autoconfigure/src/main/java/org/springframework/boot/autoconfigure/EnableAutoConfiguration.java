@@ -79,8 +79,9 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@AutoConfigurationPackage
-@Import(AutoConfigurationImportSelector.class)
+@AutoConfigurationPackage // 指定basePackages 和 basePackageClasses 的值，将对应Class 注入
+@Import(AutoConfigurationImportSelector.class) // 调用方法，获取META-INF/spring.factories目录下所有文件的要注入的类名，过滤，排除，最后返回的
+// 就是要注入的类名
 public @interface EnableAutoConfiguration {
 
 	/**

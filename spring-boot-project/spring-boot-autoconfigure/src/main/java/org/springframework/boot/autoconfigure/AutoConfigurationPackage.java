@@ -38,7 +38,9 @@ import org.springframework.context.annotation.Import;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import(AutoConfigurationPackages.Registrar.class)
+@Import(AutoConfigurationPackages.Registrar.class) // 注入AutoConfigurationPackages.Registrar类，实现了
+// ImportBeanDefinitionRegistrar, DeterminableImports接口，将basePackages 和 basePackageClasses 值对应的
+// class 注入进BeanDefinitionMap 中
 public @interface AutoConfigurationPackage {
 
 	/**
